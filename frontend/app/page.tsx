@@ -15,7 +15,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="bg-white text-gray-700 p-10 min-h-screen flex flex-col">
       <h1>ニュース検索</h1>
 
       <input
@@ -23,7 +23,7 @@ export default function Home() {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="キーワード"
       />
-      <button onClick={search}>検索</button>
+      <button className="cursor-pointer" onClick={search}>検索</button>
 
       <div>
         {articles.map((a, i) => (
