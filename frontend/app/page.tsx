@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -15,15 +18,20 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white text-gray-700 p-10 min-h-screen flex flex-col">
-      <h1>ニュース検索</h1>
-
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="キーワード"
-      />
-      <button className="cursor-pointer" onClick={search}>検索</button>
+    <div className="bg-white text-gray-700 p-10 min-h-screen flex flex-col gap-2">
+      <div className="flex gap-2">
+        <Label htmlFor="terms">ニュース検索</Label>
+      </div>
+      <div className="flex gap-2">
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="キーワード"
+        />
+        <Button className="cursor-pointer" onClick={search}>
+          検索
+        </Button>
+      </div>
 
       <div>
         {articles.map((a, i) => (
