@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,8 +16,52 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface UserData{
+  username:string,
+}
 
 export default function Home() {
+  const router = useRouter();
+  const [user,setUser] = useState<UserData|null>(null);
+  useEffect(() => {
+        const fetchUserProfile = async () => {
+        // 💡 ログイン時に保存したトークンを取り出す
+        const token = localStorage.getItem('accessToken');
+
+        // トークンがなければログイン画面へ強制送還
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/api/auth/me/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // 💡 ここが超重要！「Bearer 空白 トークン」の形で送ります
+                'Authorization': `Bearer ${token}`,
+            },
+            });
+
+            if (response.ok) {
+            const data = await response.json();
+            setUser(data);
+            } else {
+            // トークンの期限切れなどの場合はトークンを消してログインへ
+            localStorage.removeItem('accessToken');
+            router.push('/login');
+            }
+        } catch (err) {
+            console.error('通信エラー:', err);
+        } finally {
+            setLoading(false);
+        }
+        };
+
+        fetchUserProfile();
+    }, [router]);
+
   const [query, setQuery] = useState<string>("");
   const [articles, setArticles] = useState<any[]>([]);
   const [loading,setLoading] = useState<boolean>(false);
@@ -56,7 +101,11 @@ export default function Home() {
               <a href="bookmark">★</a>
             </Button>
             <Button>
-              <a href="login">ログイン</a>
+              {user ? (
+                <a href="mypage">マイページ</a>
+              ):(
+                <a href="login">ログイン</a>
+              )}
             </Button>
           </div>
       </div>

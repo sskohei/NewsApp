@@ -34,3 +34,11 @@ class RegisterView(views.APIView):
             )
         # バリデーションエラー（ユーザー名重複など）があればエラー内容を返す
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserMeView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self,request):
+        return Response({
+            "username":request.user.username,
+        })
